@@ -65,10 +65,12 @@ def create_client(filename, host, url, method, headers, data):
 	headers = map(conver_header, headers)
 	filetpl += (","+jpl).join(headers)
 	filetpl += jpl+"}"+jpl
-	filetpl += "req = requests.:method:('http://:address:', headers=headers)" + jpl
+	filetpl += "data=':data:'"+jpl
+	filetpl += "req = requests.:method:('http://:address:', headers=headers, data=data)" + jpl
 	filetpl += "print req.text" + jpl
 	filetpl = filetpl.replace(":method:", method.lower()) 
 	filetpl = filetpl.replace(":address:", host+url)
+	filetpl = filetpl.replace(":data:", data)
 	reqfile.write(filetpl)
 	reqfile.close()
 	
