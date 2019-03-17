@@ -1,5 +1,6 @@
 import sys
 import re
+import time
 
 def get_action(content):
 	action = ""
@@ -54,45 +55,78 @@ def conver_header(row):
 	val = row.split(":")[1].lstrip().strip()
 	headertpl = headertpl.replace(':key:', key)
 	headertpl = headertpl.replace(':value:', val)
+	
 	return headertpl
 	
-def create_client(filename, host, url, method, headers, data):
-	jpl = "\n"
-	with open(filename, "w"): pass
-	reqfile = open(filename, "w")
-	filetpl = "import requests" + jpl
-	filetpl += "headers = {"+jpl
+def common_template(host, url, method, headers, data):
+
 	headers = map(conver_header, headers)
-	filetpl += (","+jpl).join(headers)
-	filetpl += jpl+"}"+jpl
-	filetpl += "data=':data:'"+jpl
-	filetpl += "req = requests.:method:('http://:address:', headers=headers, data=data)" + jpl
-	filetpl += "print req.text" + jpl
-	filetpl = filetpl.replace(":method:", method.lower()) 
-	filetpl = filetpl.replace(":address:", host+url)
-	filetpl = filetpl.replace(":data:", data)
-	reqfile.write(filetpl)
-	reqfile.close()
+	
+	jpl = "\n"
+	tpl = "import requests" + jpl
+	tpl += "headers = {"+jpl
+	tpl += (","+jpl).join(headers)
+	tpl += jpl+"}"+jpl
+	tpl += "data=':data:'"+jpl
+	tpl += "req = requests.:method:('http://:address:', headers=headers, data=data)" + jpl
+	tpl += "print req.text" + jpl
+	tpl = tpl.replace(":method:", method.lower()) 
+	tpl = tpl.replace(":address:", host+url)
+	tpl = tpl.replace(":data:", data)
+	
+	return tpl
 	
 
+def banner():
+
+	print("""\n#d(0_0)b  Burp Request Parser\n#https://github.com/germanlm93/burp_request_parser\n#burp-req to python\n""")
+
+def default_exit(text):
+	
+	sys.exit(text)
+	
+def parameters():
+	
+	file_in = sys.argv[1]
+	
+	return file_in
+
+def read_req(filename):
+	
+	try:
+		with open(filename, "r") as f:
+			text = f.read()
+	except Exception as e:
+		default_exit("[Error] Fail reading file")
+
+	if text == "":
+		default_exit("[Error] File is empty")
+	
+	return text
+	
+def parse(text):
+	
+	data = get_data(text)
+	host = get_host(text)
+	headers = get_headers(text)
+	method, url = get_action(text)
+	
+	return common_template(host, url, method, headers, data)
+
+def show(text):
+	
+	print(text)
+
 def main():
+	
+	banner()
+	
 	if len(sys.argv) == 1:
-		sys.exit("usage parser.py req.txt")
+		default_exit("Usage: burp-req-parser.py req.txt")
 	else:
-		filename = sys.argv[1]
-		outputname = sys.argv[2] if len(sys.argv)>=3 else "req.py"
-		text = ""
-		try:
-			with open(filename, "r") as f:
-				text = f.read()
-		except IOError as e:
-			sys.exit(e)
-		if text == "":
-			sys.exit("File is empty")
-		method, url = get_action(text)
-		host = get_host(text)
-		headers = get_headers(text)
-		data = get_data(text)
-		create_client(outputname, host, url, method, headers, data)
+		file_in = parameters()
+		text = read_req(file_in)
+		result = parse(text)
+		show(result)
 
 main()
