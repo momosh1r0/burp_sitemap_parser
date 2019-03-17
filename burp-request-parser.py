@@ -3,7 +3,9 @@ import re
 import time
 
 def get_action(content):
+	
 	action = ""
+	
 	p = re.compile('^(POST|GET|PUT|DELETE|TRACE)\s.+\sHTTP.+$')
 	for i in content.split("\n"):
 		if action == "":
@@ -11,13 +13,15 @@ def get_action(content):
 				action = i
 	if(action == ""):
 		sys.exit("Action parsing error")
-	else:
-		method = action.split(" ")[0] 
-		url = action.split(" ")[1]
+	method = action.split(" ")[0] 
+	url = action.split(" ")[1]
+
 	return method, url
 
 def get_host(content):
+
 	host = ""
+
 	p = re.compile('^Host:\s*.+$')
 	for i in content.split("\n"):
 		if host == "":
@@ -25,21 +29,24 @@ def get_host(content):
 				host = i
 	if(host == ""):
 		sys.exit("Host parsing error")
-	else:
-		return host.split(": ")[1]
+	
+	return host.split(": ")[1]
 		
 def get_headers(content):
+
 	headers = []
+
 	p = re.compile('^[a-zA-Z0-9\-\.]+:\s+.+$')
 	for i in content.split("\n"):
 		if p.match(i):
 			headers.append(i)
 	if(headers == []):
 		sys.exit("Headers parsing error")
-	else:
-		return headers
+
+	return headers
 
 def get_data(content):
+
 	data = ""
 	catch = True
 	for i in content.split("\n"):
@@ -47,10 +54,13 @@ def get_data(content):
 			if i.strip() == "": catch = False
 		else:
 			if data == "": data = i
+
 	return data
 	
 def conver_header(row):
+	
 	headertpl = "\t':key:':':value:'"
+	
 	key = row.split(":")[0].lstrip().strip()
 	val = row.split(":")[1].lstrip().strip()
 	headertpl = headertpl.replace(':key:', key)
