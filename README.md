@@ -6,11 +6,6 @@ Create python request script from simple burpsuite request
 
 ![alt text](https://github.com/geloma/burp_request_parser/blob/master/result.png)
 
-Usage:
-python burp-request-parser.py examples/http-get.txt
-
-
-
 ### Usage
 
 The file output can be piped
