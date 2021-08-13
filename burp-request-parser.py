@@ -1,7 +1,8 @@
 import sys
 import re
 import time
-
+import urllib.parse
+	
 def get_action(content):
 	
 	action = ""
@@ -57,7 +58,7 @@ def get_data(content):
 
 	return data
 	
-def conver_header(row):
+def convert_headers_to_json(row):
 	
 	headertpl = "\t':key:':':value:'"
 	
@@ -67,22 +68,37 @@ def conver_header(row):
 	headertpl = headertpl.replace(':value:', val)
 	
 	return headertpl
+
+def convert_param_to_json(row):
 	
+	paramtpl = "\t':key:':':value:'"
+	
+	key = row.split("=")[0].lstrip().strip()
+	val = row.split("=")[1].lstrip().strip()
+	paramtpl = paramtpl.replace(':key:', key)
+	paramtpl = paramtpl.replace(':value:', val)
+	
+	return paramtpl
+		
 def common_template(host, url, method, headers, data):
 
-	headers = map(conver_header, headers)
+	headers = map(convert_headers_to_json, headers)
 	
 	jpl = "\n"
 	tpl = "import requests" + jpl
 	tpl += "headers = {"+jpl
 	tpl += (","+jpl).join(headers)
 	tpl += jpl+"}"+jpl
-	tpl += "data=':data:'"+jpl
-	tpl += "req = requests.:method:('http://:address:', headers=headers, data=data)" + jpl
-	tpl += "print req.text" + jpl
+	sdata = urllib.parse.unquote(data)
+	params = map(convert_param_to_json, sdata.split("&"))
+	tpl += "params = {"+jpl
+	tpl += (","+jpl).join(params)
+	tpl += jpl+"}"+jpl
+	tpl += "req = requests.:method:('http://:address:', headers=headers, data=params, verify=False)" + jpl
+	tpl += "print (req.text)" + jpl
 	tpl = tpl.replace(":method:", method.lower()) 
 	tpl = tpl.replace(":address:", host+url)
-	tpl = tpl.replace(":data:", data)
+	tpl = tpl.replace(":data:", sdata)
 	
 	return tpl
 	
