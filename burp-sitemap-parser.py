@@ -35,7 +35,7 @@ def util_get_action(content):
 	
 	action = ""
 	
-	p = re.compile('^(POST|GET|PUT|OPTIONS|DELETE|TRACE)\s.+\sHTTP.+$')
+	p = re.compile('^(POST|GET|OPTIONS|PUT|DELETE|TRACE)\s.+\sHTTP.+$')
 	for i in util_convert_data(content):
 		if action == "":
 			if p.match(i):
@@ -218,8 +218,9 @@ def burp_sitemap_parser():
             print("\033[1mPOST PARAMS:\033[0m " + ", ".join(post_params.keys()))
             if post_params.keys():
                 inputs = inputs + list(post_params.keys())
+
         if type(json_body) is dict:
-           print("\033[1mINPUT:\033[0m " + ", ".join(json_body.keys()))
+           print("\033[1mJSON BODY PARAMS:\033[0m " + ", ".join(json_body.keys()))
            if json_body.keys():
                 inputs = inputs + list(json_body.keys())
 
@@ -228,9 +229,11 @@ def burp_sitemap_parser():
             print("\033[1mAUTHORIZATION:\033[0m " + headers["Authorization"])
         print("\033[1mHEADER SUM:\033[0m " + str(len(headers.keys())))
         print("\033[1mINPUT SUM:\033[0m " + str(len(inputs)))
-
-        found[url] = inputs
-        #input_found += len(inputs)
+        
+        if url not in list(found.keys()):   
+            found[url] = inputs
+        else:
+            found[url] = found[url] + inputs
   
     print("\n ------------------------------ || ------------------------------\n")  
     print("\033[1mSITEMAP:\033[0m ")    
