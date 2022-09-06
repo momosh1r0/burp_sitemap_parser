@@ -29,7 +29,7 @@ class Request:
 
 def util_convert_data(content):
 
-    return content.decode("utf-8").split("\n")
+    return content.decode("utf-8", 'ignore').split("\n")
 
 def util_get_action(content):
 	
@@ -53,7 +53,8 @@ def util_get_action(content):
 def util_get_body(content):
 
 	body = ""
-	content = content.decode("utf-8")
+	print(content)
+	content = content.decode("utf-8", 'ignore')
 	if content.find("\r\n\r\n") != -1:
 		body = content.split("\r\n\r\n")[1]
 
@@ -233,7 +234,11 @@ def burp_sitemap_parser():
         if url not in list(found.keys()):   
             found[url] = inputs
         else:
-            found[url] = found[url] + inputs
+            add = []
+            for inp in inputs:
+                if inp not in found[url]:
+                    add.append(inp)
+            found[url] = inputs + add
   
     print("\n ------------------------------ || ------------------------------\n")  
     print("\033[1mSITEMAP:\033[0m ")    
