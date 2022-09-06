@@ -35,7 +35,7 @@ def util_get_action(content):
 	
 	action = ""
 	
-	p = re.compile('^(POST|GET|PUT|DELETE|TRACE)\s.+\sHTTP.+$')
+	p = re.compile('^(POST|GET|PUT|OPTIONS|DELETE|TRACE)\s.+\sHTTP.+$')
 	for i in util_convert_data(content):
 		if action == "":
 			if p.match(i):
