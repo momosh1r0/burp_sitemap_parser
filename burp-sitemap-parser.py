@@ -150,7 +150,7 @@ def burp_sitemap_parser():
 
     if len(sys.argv) != 2:
         print("Usage:")
-        print("./burp_sitemap_parser.py FILENAME\n")
+        print("./burp-sitemap-parser.py FILENAME\n")
         sys.exit(0)
     
     filename = sys.argv[1]
@@ -204,19 +204,19 @@ def burp_sitemap_parser():
         print("\033[1mHEADERS:\033[0m " + ", ".join(sorted(headers.keys())))
         if content_type:
             print("\033[1mCONTENT-TYPE:\033[0m " + content_type)
-        print("\033[1mCOOKIES:\033[0m " + ", ".join(cookies.keys()))
-        print("\033[1mGET PARAMS:\033[0m " + ", ".join(get_params.keys()))
-        print("\033[1mPOST PARAMS:\033[0m " + ", ".join(post_params.keys()))
         total = len(get_params.keys()) 
         
         if type(cookies) is dict:
-           if cookies.keys():
+            print("\033[1mCOOKIES:\033[0m " + ", ".join(cookies.keys()))
+            if cookies.keys():
                 inputs = inputs + list(cookies.keys())
         if type(get_params) is dict:
-           if get_params.keys():
+            print("\033[1mGET PARAMS:\033[0m " + ", ".join(get_params.keys()))
+            if get_params.keys():
                 inputs = inputs + list(get_params.keys())
         if type(post_params) is dict:
-           if post_params.keys():
+            print("\033[1mPOST PARAMS:\033[0m " + ", ".join(post_params.keys()))
+            if post_params.keys():
                 inputs = inputs + list(post_params.keys())
         if type(json_body) is dict:
            print("\033[1mINPUT:\033[0m " + ", ".join(json_body.keys()))
@@ -230,7 +230,7 @@ def burp_sitemap_parser():
         print("\033[1mINPUT SUM:\033[0m " + str(len(inputs)))
 
         found[url] = inputs
-        input_found += len(inputs)
+        #input_found += len(inputs)
   
     print("\n ------------------------------ || ------------------------------\n")  
     print("\033[1mSITEMAP:\033[0m ")    
@@ -245,7 +245,7 @@ def burp_sitemap_parser():
                 print("   - " + param)
                 rows.append (",".join([target, param]))
 
-    print("\n\033[1m[+] Inputs ("+str(input_found)+") \033[0m")
+    #print("\n\033[1m[+] Inputs ("+str(input_found)+") \033[0m")
     print("\n\033[1m[+] Saving " + filename + '.csv\033[0m')
     with open(filename + '.csv', 'w', encoding='UTF8') as f:
         f.write(",".join(["URL", "PARAMETRO"])+"\n")
