@@ -248,7 +248,7 @@ def burp_sitemap_parser():
     #print("\n\033[1m[+] Inputs ("+str(input_found)+") \033[0m")
     print("\n\033[1m[+] Saving " + filename + '.csv\033[0m')
     with open(filename + '.csv', 'w', encoding='UTF8') as f:
-        f.write(",".join(["URL", "PARAMETRO"])+"\n")
+        f.write(",".join(["URL", "PARAMETER"])+"\n")
         f.write("\n".join(rows))
 
 
