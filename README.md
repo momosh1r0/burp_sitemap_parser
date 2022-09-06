@@ -1,4 +1,4 @@
-# burp_request_parser
+# burp_sitemap_parser
 
 ### Installation
 ```
